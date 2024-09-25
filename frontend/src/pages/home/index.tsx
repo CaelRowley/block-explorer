@@ -10,6 +10,8 @@ import {
   TableRow,
   TableCell,
   CircularProgress,
+  Pagination,
+  Grid2 as Grid,
 } from "@mui/material";
 
 type Block = {
@@ -22,14 +24,18 @@ type Block = {
 };
 
 const Home: React.FC = () => {
-  const page = 1;
   const pageSize = 10;
   const orderByField = "timestamp";
   const orderByDirection = "desc";
-  const refetchInterval = 15000
+  const refetchInterval = 15000;
+
+  const [page, setPage] = React.useState<number>(1);
+  const onHandlePagination = (_: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
 
   const { isPending, error, data } = useQuery({
-    queryKey: [],
+    queryKey: [page],
     queryFn: () =>
       fetch(
         `${import.meta.env.VITE_BACKEND_URL}/eth/blocks?page=${page}&pageSize=${pageSize}&orderByField=${orderByField}&orderByDirection=${orderByDirection}`,
@@ -49,7 +55,7 @@ const Home: React.FC = () => {
     <Paper sx={{ padding: "32px" }}>
       <h2>Blocks Data</h2>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: '100%' }} aria-label="simple table">
+        <Table sx={{ minWidth: "100%" }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell align="left">Number</TableCell>
@@ -77,9 +83,31 @@ const Home: React.FC = () => {
                 </TableRow>
               );
             })}
+            {Array.from({ length: pageSize - data.data.length }).map(
+              (_, index) => (
+                <TableRow sx={{ height: 60 }} key={`empty-${index}`}>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                </TableRow>
+              ),
+            )}
           </TableBody>
         </Table>
       </TableContainer>
+      <br />
+      <Grid display="flex" justifyContent="end">
+        <Pagination
+          page={page}
+          onChange={onHandlePagination}
+          count={Math.ceil(data.count / pageSize)}
+          color="primary"
+        />
+      </Grid>
     </Paper>
   );
 };
