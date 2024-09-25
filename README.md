@@ -6,7 +6,7 @@ A basic block explorer that connects to an eth node websocket to pull the latest
 
 - [Docker](https://docs.docker.com/desktop/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
-- [pNpM](https://pnpm.io/)
+- [pNpM](https://pnpm.io/) or [npm](https://www.npmjs.com/)
 
 ## Environment Variables
 
@@ -37,9 +37,9 @@ _Check frontend/.env.sample_
 docker-compose -f docker-compose.yml up
 ```
 
-3. Install dependencies `pnpm install`
+3. Install dependencies `pnpm install` or `npm install`
 
-3. Run server `pnpm start`
+3. Run server `pnpm start` or `npm start`
 
 ### Frontend
 
@@ -47,9 +47,9 @@ docker-compose -f docker-compose.yml up
 
 1. Create `.env` file beside `.env.sample` and set env vars
 
-1. Install dependencies `pnpm install`
+1. Install dependencies `pnpm install` or `npm install`
 
-1. Run server `pnpm start`
+1. Run server `pnpm start` or `npm start`
 
 
 ## Database Table Structure
