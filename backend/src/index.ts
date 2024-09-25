@@ -3,6 +3,8 @@ dotenv.config();
 
 import { startServer } from "src/server";
 
-startServer().catch((error) => {
+const PORT = Number(process.env.PORT!);
+
+startServer(PORT).catch((error) => {
   console.error(error);
 });
