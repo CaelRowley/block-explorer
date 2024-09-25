@@ -12,3 +12,14 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Block {
+  hash      String @id @db.VarChar(66)
+  size      Decimal @db.Decimal(78, 0)
+  number    Decimal @db.Decimal(78, 0)
+  timestamp Decimal @db.Decimal(78, 0)
+  nonce     Decimal @db.Decimal(78, 0)
+  gasLimit  Decimal @db.Decimal(78, 0) @map("gas_limit")
+
+  @@map("blocks")
+}
