@@ -41,6 +41,8 @@ docker-compose -f docker-compose.yml up
 
 3. Run server `pnpm start` or `npm start`
 
+4. The server will automatically fetch the latest blocks from on chain but you can seed fake blocks by making a post request to `http://localhost:8080/eth/blocks/seed-fake` (no request body is needed) which will create 100 fake blocks in the db which is useful for testing the pagination and block deletion
+
 ### Frontend
 
 1. Navigate to the frontend project `cd frontend`
