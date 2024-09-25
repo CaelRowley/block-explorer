@@ -1,11 +1,13 @@
 {
-  "name": "backend",
+  "name": "block-explorer-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "A basic block explorer",
   "main": "index.js",
   "scripts": {
     "start": "ts-node-dev --respawn -r tsconfig-paths/register src/index.ts --watch 'src/**/*.ts'",
     "fmt": "exec prettier . --write",
+    "migrate": "prisma migrate deploy",
+    "reset": "prisma migrate reset",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

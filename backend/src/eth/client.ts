@@ -6,7 +6,7 @@ import type { Block } from "@prisma/client";
 export const fetchBlock = async (
   url: string,
   id: string = "latest",
-): Promise<any> => {
+): Promise<Block> => {
   const data = {
     jsonrpc: "2.0",
     method: "eth_getBlockByNumber",

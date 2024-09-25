@@ -10,8 +10,8 @@ import { insertBlock } from "src/db/block";
 export const startServer = async (port: number) => {
   const block = await fetchBlock(process.env.NODE_URL!);
   const dbBlock = await insertBlock(block);
-  console.log(dbBlock)
-  
+  console.log(dbBlock);
+
   const app = new Koa();
 
   app.use(cors());
