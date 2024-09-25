@@ -39,6 +39,10 @@ docker-compose -f docker-compose.yml up
 
 3. Install dependencies `pnpm install` or `npm install`
 
+3. Run `prisma migrate` to run the migrations `pnpm migrate` or `npm run migrate`
+
+3. Run `prisma generate` to generate the TypeScript types `pnpm generate` or `npm run generate`
+
 3. Run server `pnpm start` or `npm start`
 
 4. The server will automatically fetch the latest blocks from on chain but you can seed fake blocks by making a post request to `http://localhost:8080/eth/blocks/seed-fake` (no request body is needed) which will create 100 fake blocks in the db which is useful for testing the pagination and block deletion
