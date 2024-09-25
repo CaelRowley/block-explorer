@@ -74,3 +74,29 @@ export const removeBlockByHash = async (hash: string) => {
     throw error;
   }
 };
+
+export const removeBlocksByHash = async (hashes: Array<string>) => {
+  try {
+    const deletedBlocks = await prisma.block.deleteMany({
+      where: {
+        hash: {
+          in: hashes,
+        },
+      },
+    });
+    return deletedBlocks;
+  } catch (error) {
+    console.error("Error deleting blocks:", error);
+    throw error;
+  }
+};
+
+export const removeAllBlocks = async () => {
+  try {
+    const deletedBlocks = await prisma.block.deleteMany();
+    return deletedBlocks;
+  } catch (error) {
+    console.error("Error deleting blocks:", error);
+    throw error;
+  }
+};
