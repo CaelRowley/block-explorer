@@ -6,7 +6,7 @@ const Home: React.FC = () => {
     queryKey: [],
     queryFn: () =>
       fetch(
-        "http://localhost:8080/eth/block/0xe3f82900c714ca9069cf3525978c8dcb4b67148afed9db1cfaba1b99fc5585b9"
+        `${import.meta.env.VITE_BACKEND_URL}/eth/block/0xe3f82900c714ca9069cf3525978c8dcb4b67148afed9db1cfaba1b99fc5585b9`
       ).then((res) => res.json()),
   });
 
@@ -18,7 +18,6 @@ const Home: React.FC = () => {
     return <p>Oops something went wrong...</p>;
   }
 
-  console.log(data)
   return (
     <div>
       <h1>
