@@ -37,6 +37,7 @@ const Home: React.FC = () => {
   const [orderByField, setOrderByField] = useState<string>("timestamp");
   const [orderByDir, setOrderByDir] = useState<"asc" | "desc">("desc");
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
+  const [selectedCells, setSelectedCells] = useState<string[]>([]);
 
   const onHandlePagination = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -56,10 +57,18 @@ const Home: React.FC = () => {
       setSelectedRows([...selectedRows, key]);
     }
   };
-  
+
   const handleAllChecked = () => {
     setIsAllChecked(!isAllChecked);
     setSelectedRows([]);
+  };
+
+  const handleOnCellClicked = (key: string) => {
+    if (selectedCells.includes(key)) {
+      setSelectedCells(selectedCells.filter((item) => item !== key));
+    } else {
+      setSelectedCells([...selectedCells, key]);
+    }
   };
 
   const handleOnDeleteClick = async () => {
@@ -104,7 +113,7 @@ const Home: React.FC = () => {
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: "100%" }} aria-label="Block table">
           <TableHead>
-            <TableRow>
+            <TableRow selected={isAllChecked}>
               <TableCell padding="checkbox">
                 <Checkbox
                   color="primary"
@@ -172,15 +181,47 @@ const Home: React.FC = () => {
                       checked={isRowSelected || isAllChecked}
                     />
                   </TableCell>
-                  <TableCell align="left">{row.number.toString()}</TableCell>
-                  <TableCell align="right">{row.size.toString()}</TableCell>
-                  <TableCell align="right">
-                    {new Decimal(row.timestamp).toHex()}
+                  <TableCell
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => handleOnCellClicked("number_" + row.hash)}
+                    align="left"
+                  >
+                    {selectedCells.includes("number_" + row.hash)
+                      ? row.number.toString()
+                      : new Decimal(row.number).toHex()}
+                  </TableCell>
+                  <TableCell
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => handleOnCellClicked("size_" + row.hash)}
+                    align="right"
+                  >
+                    {selectedCells.includes("size_" + row.hash)
+                      ? row.size.toString()
+                      : new Decimal(row.size).toHex()}
+                  </TableCell>
+                  <TableCell
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => handleOnCellClicked("timestamp_" + row.hash)}
+                    align="right"
+                  >
+                    {selectedCells.includes("timestamp_" + row.hash)
+                      ? new Date(
+                          new Decimal(row.timestamp).mul(1000).toNumber(),
+                        ).toLocaleString()
+                      : new Decimal(row.timestamp).toHex()}
                   </TableCell>
                   <TableCell align="right">
                     {new Decimal(row.nonce).toHex()}
                   </TableCell>
-                  <TableCell align="right">{row.gasLimit.toString()}</TableCell>
+                  <TableCell
+                    sx={{ cursor: "pointer" }}
+                    onClick={() => handleOnCellClicked("gasLimit_" + row.hash)}
+                    align="right"
+                  >
+                    {selectedCells.includes("gasLimit_" + row.hash)
+                      ? row.gasLimit.toString()
+                      : new Decimal(row.gasLimit).toHex()}
+                  </TableCell>
                   <TableCell align="right">{row.hash}</TableCell>
                 </TableRow>
               );
