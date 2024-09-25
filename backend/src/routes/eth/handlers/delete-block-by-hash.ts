@@ -1,20 +1,20 @@
 import type { Middleware } from "koa";
 import { z } from "zod";
 
-import { getBlockByHash } from "src/db/block";
+import { removeBlockByHash } from "src/db/block";
 
 const pathParamsSchema = z.object({
   hash: z.string(),
 });
 
-export const handleGetBlockByHash: Middleware = async (
+export const handleDeleteBlockByHash: Middleware = async (
   ctx,
   next,
 ): Promise<void> => {
   try {
     const { hash } = pathParamsSchema.parse(ctx.params);
 
-    const block = await getBlockByHash(hash);
+    const block = await removeBlockByHash(hash);
     if (!block) {
       ctx.status = 404;
       ctx.body = {
@@ -29,7 +29,7 @@ export const handleGetBlockByHash: Middleware = async (
       data: block,
     };
   } catch (error) {
-    console.error("Error getting block:", error);
+    console.error("Error deleting block:", error);
 
     if (error instanceof z.ZodError) {
       ctx.status = 400;
@@ -43,7 +43,7 @@ export const handleGetBlockByHash: Middleware = async (
     ctx.status = 500;
     ctx.body = {
       error: "Internal Server Error",
-      message: "An error occurred while fetching the block.",
+      message: "An error occurred while deleting the block.",
     };
     return;
   }

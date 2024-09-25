@@ -12,4 +12,4 @@ startServer(PORT).catch((error) => {
   console.error(error);
 });
 
-connectToEthSocket(NODE_SOCKET, NODE_URL);
+// connectToEthSocket(NODE_SOCKET, NODE_URL);
