@@ -9,6 +9,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  CircularProgress,
 } from "@mui/material";
 
 type Block = {
@@ -21,16 +22,23 @@ type Block = {
 };
 
 const Home: React.FC = () => {
+  const page = 1;
+  const pageSize = 10;
+  const orderByField = "timestamp";
+  const orderByDirection = "desc";
+  const refetchInterval = 15000
+
   const { isPending, error, data } = useQuery({
     queryKey: [],
     queryFn: () =>
       fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/eth/block/0xe3f82900c714ca9069cf3525978c8dcb4b67148afed9db1cfaba1b99fc5585b9`,
+        `${import.meta.env.VITE_BACKEND_URL}/eth/blocks?page=${page}&pageSize=${pageSize}&orderByField=${orderByField}&orderByDirection=${orderByDirection}`,
       ).then((res) => res.json()),
+    refetchInterval,
   });
 
   if (isPending) {
-    return <p>Loading...</p>;
+    return <CircularProgress />;
   }
 
   if (error) {
@@ -41,7 +49,7 @@ const Home: React.FC = () => {
     <Paper sx={{ padding: "32px" }}>
       <h2>Blocks Data</h2>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 1200 }} aria-label="simple table">
+        <Table sx={{ minWidth: '100%' }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell align="left">Number</TableCell>
@@ -53,13 +61,13 @@ const Home: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {[data.data].map((row: Block) => {
+            {data.data.map((row: Block) => {
               return (
                 <TableRow sx={{ height: 60 }} key={row.hash}>
                   <TableCell align="left">{row.number.toString()}</TableCell>
                   <TableCell align="right">{row.size.toString()}</TableCell>
                   <TableCell align="right">
-                    new Decimal(row.timestamp).toHex()
+                    {new Decimal(row.timestamp).toHex()}
                   </TableCell>
                   <TableCell align="right">
                     {new Decimal(row.nonce).toHex()}
