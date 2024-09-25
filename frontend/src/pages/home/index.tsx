@@ -16,6 +16,12 @@ import {
   Grid2 as Grid,
   Checkbox,
   Button,
+  FormControlLabel,
+  Switch,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 type Block = {
@@ -29,15 +35,16 @@ type Block = {
 
 const Home: React.FC = () => {
   const queryClient = useQueryClient();
-  const pageSize = 10;
   const refetchInterval = 15000;
 
   const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [orderByField, setOrderByField] = useState<string>("timestamp");
   const [orderByDir, setOrderByDir] = useState<"asc" | "desc">("desc");
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [selectedCells, setSelectedCells] = useState<string[]>([]);
+  const [showHumanReadable, setShowHumanReadable] = useState(false);
 
   const onHandlePagination = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -71,6 +78,13 @@ const Home: React.FC = () => {
     }
   };
 
+  const onToggleHexConversion = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setShowHumanReadable(event.target.checked);
+    setSelectedCells([]);
+  };
+
   const handleOnDeleteClick = async () => {
     try {
       if (isAllChecked) {
@@ -93,7 +107,7 @@ const Home: React.FC = () => {
   };
 
   const { isPending, error, data } = useQuery({
-    queryKey: [page, orderByField, orderByDir],
+    queryKey: [page, pageSize, orderByField, orderByDir],
     queryFn: () =>
       fetch(
         `${import.meta.env.VITE_BACKEND_URL}/eth/blocks?page=${page}&pageSize=${pageSize}&orderByField=${orderByField}&orderByDirection=${orderByDir}`,
@@ -186,7 +200,8 @@ const Home: React.FC = () => {
                     onClick={() => handleOnCellClicked("number_" + row.hash)}
                     align="left"
                   >
-                    {selectedCells.includes("number_" + row.hash)
+                    {showHumanReadable !==
+                    selectedCells.includes("number_" + row.hash)
                       ? row.number.toString()
                       : new Decimal(row.number).toHex()}
                   </TableCell>
@@ -195,7 +210,8 @@ const Home: React.FC = () => {
                     onClick={() => handleOnCellClicked("size_" + row.hash)}
                     align="right"
                   >
-                    {selectedCells.includes("size_" + row.hash)
+                    {showHumanReadable !==
+                    selectedCells.includes("size_" + row.hash)
                       ? row.size.toString()
                       : new Decimal(row.size).toHex()}
                   </TableCell>
@@ -204,7 +220,8 @@ const Home: React.FC = () => {
                     onClick={() => handleOnCellClicked("timestamp_" + row.hash)}
                     align="right"
                   >
-                    {selectedCells.includes("timestamp_" + row.hash)
+                    {showHumanReadable !==
+                    selectedCells.includes("timestamp_" + row.hash)
                       ? new Date(
                           new Decimal(row.timestamp).mul(1000).toNumber(),
                         ).toLocaleString()
@@ -218,7 +235,8 @@ const Home: React.FC = () => {
                     onClick={() => handleOnCellClicked("gasLimit_" + row.hash)}
                     align="right"
                   >
-                    {selectedCells.includes("gasLimit_" + row.hash)
+                    {showHumanReadable !==
+                    selectedCells.includes("gasLimit_" + row.hash)
                       ? row.gasLimit.toString()
                       : new Decimal(row.gasLimit).toHex()}
                   </TableCell>
@@ -243,17 +261,45 @@ const Home: React.FC = () => {
         </Table>
       </TableContainer>
       <br />
-      <Grid container justifyContent={"space-between"} spacing={2}>
-        <Grid display="flex" justifyContent="end">
+      <Grid container justifyContent={"space-between"}>
+        <Grid display="flex" justifyContent="start" size={{ xs: 2 }}>
           <Button
             onClick={handleOnDeleteClick}
             disabled={selectedRows.length <= 0 && !isAllChecked}
             variant="outlined"
           >
-            Delete Selected
+            {isAllChecked
+              ? "Delete All Blocks"
+              : selectedRows.length <= 0
+                ? "Delete Blocks"
+                : "Delete Selected"}
           </Button>
         </Grid>
-        <Grid display="flex" justifyContent="end">
+        <Grid display="flex" justifyContent="start" size="grow">
+          <FormControlLabel
+            control={
+              <Switch onChange={onToggleHexConversion} defaultChecked={false} />
+            }
+            label="Show Human Readable Values"
+          />
+        </Grid>
+        <Grid display="flex" justifyContent="end" size={{ xs: 1 }}>
+          <FormControl fullWidth>
+            <InputLabel>Row Count</InputLabel>
+            <Select
+              value={pageSize}
+              label="Row Count"
+              onChange={(event) => setPageSize(Number(event.target.value))}
+            >
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={30}>30</MenuItem>
+              <MenuItem value={50}>50</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid display="flex" justifyContent="end" size="grow">
           <Pagination
             page={page}
             onChange={onHandlePagination}
